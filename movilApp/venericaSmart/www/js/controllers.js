@@ -5,12 +5,28 @@ angular.module('starter.controllers', [])
         $scope.relay = {result: false};
         $scope.automatico = true;
         $scope.automatico2 = true;
+        $scope.load = true;
+        $scope.thermostat = {
+            temp: 10,
+            band: 0,
+            current: 0
+        };
+
+        $scope.temp = {};
 
         $scope.getDate = function () {
+            $scope.automatico = false;
             $http.get('http://smart.venericameat.com/apis/last_record.json').then(
                 function (response) {
+                    console.log(response);
+                    var thermostat = response.data.thermostat[0].thermostat;
+                    $scope.thermostat = {
+                        temp: thermostat.temp,
+                        band: thermostat.band,
+                        current: thermostat.current
+                    };
+                    $scope.temp = response.data.temp.temp_log;
                     $scope.resultado = response.data.record[0].panel_192_168_1_1;
-                    console.log($scope.resultado.current);
                     if ($scope.resultado.current == 1) {
                         $scope.relay.result = true;
                     }
@@ -18,10 +34,11 @@ angular.module('starter.controllers', [])
                         $scope.relay.result = false;
                     }
                     $scope.automatico = true;
-                    console.log($scope.relay.result);
+                    $scope.load = true;
                 },
                 function (err) {
                     $scope.automatico = true;
+                    $scope.load = true;
                     console.log(err);
                     $scope.resultado = err;
                 }
@@ -29,21 +46,13 @@ angular.module('starter.controllers', [])
         };
 
         $interval(function () {
-            if ($scope.automatico) {
+            if ($scope.automatico && $scope.load) {
                 $scope.getDate();
             }
         }, 1000);
 
-        function jsonToQueryString(json) {
-            return '?' +
-            Object.keys(json).map(function (key) {
-                return encodeURIComponent(key) + '=' +
-                encodeURIComponent(json[key]);
-            }).join('&');
-        }
-
         $scope.switchButton = function () {
-            $scope.automatico = false;
+            $scope.load = false;
             if (($scope.resultado.light == 1) && ($scope.resultado.current == 0)) {
                 var r = confirm('Enough Light Inside, Are you wants to turn the lamp anyway?');
                 if (!r) {
@@ -78,7 +87,42 @@ angular.module('starter.controllers', [])
                     $scope.automatico2 = true;
                 }
             );
-        }
+        };
+
+        $scope.updateThermostat = function () {
+            $scope.automatico = false;
+            var temp = $scope.thermostat.temp;
+            var band = $scope.thermostat.band;
+            $http.get('http://smart.venericameat.com/apis/update_thermostat/' + temp + '/' + band + '.json').then(
+                function (response) {
+                    console.log(response);
+                    $scope.automatico = true;
+                },
+                function (err) {
+                    console.log(err);
+                    $scope.automatico = true;
+                }
+            );
+        };
+
+        $scope.upValue = function () {
+            $scope.automatico = false;
+            $scope.thermostat.band = parseFloat($scope.thermostat.band) + parseFloat(1);
+            $scope.updateThermostat();
+        };
+        $scope.downValue = function () {
+            $scope.automatico = false;
+            $scope.thermostat.band = parseFloat($scope.thermostat.band) - parseFloat(1);
+            $scope.updateThermostat();
+        };
+
+        $scope.$watch('thermostat.temp', function (newValue, oldValue) {
+            if ((newValue != oldValue)) {
+                console.log(newValue);
+                $scope.automatico = false;
+                $scope.updateThermostat();
+            }
+        });
 
     })
 

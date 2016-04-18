@@ -21,9 +21,13 @@ class ApisController extends AppController
     {
         $this->response->header('Access-Control-Allow-Origin', '*');
         $record = $this->Api->query('select * from panel_192_168_1_1 order by id DESC limit 1');
+        $thermostat = $this->Api->query('select * from thermostat order by id DESC limit 1');
+        $temp = $this->Api->query('select * from temp_log order by id DESC limit 1');
         $this->set(array(
             'record' => $record,
-            '_serialize' => array('record')
+            'thermostat' => $thermostat,
+            'temp' => $temp[0],
+            '_serialize' => array('record', 'thermostat', 'temp')
         ));
     }
 
@@ -38,7 +42,7 @@ class ApisController extends AppController
         $this->Api->query($sql);
 
         $aux = false;
-        sleep(3);
+        sleep(1);
         $record2 = $this->Api->query('select * from panel_192_168_1_1 order by id DESC limit 1');
         if ($record2[0]['panel_192_168_1_1']['current'] != $current) {
             $aux = true;
@@ -63,13 +67,28 @@ class ApisController extends AppController
         ));
     }
 
+    public function update_thermostat($temp, $band)
+    {
+        $msg = 'error de insercion';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $thermostat = $this->Api->query('select * from thermostat order by id DESC limit 1');
+        $id = $thermostat[0]['thermostat']['id'];
+        $this->Api->query("UPDATE thermostat SET temp='".$temp."', band='".$band."' WHERE (id='".$id."');");
+        $msg = 'ok';
+        $this->set(array(
+            'msg' => $msg,
+            '_serialize' => array('msg')
+        ));
+    }
+
     public function unlock_door()
     {
         $msg = 'error de insercion';
         $aux = null;
         $this->response->header('Access-Control-Allow-Origin', '*');
         $this->Api->query('UPDATE door SET door.lock=1 WHERE (door.lock=0);');
-        sleep(3);
+        sleep(1);
         $this->Api->query('UPDATE door SET door.lock=0 WHERE (door.lock=1);');
         $msg = 'ok';
         $this->set(array(

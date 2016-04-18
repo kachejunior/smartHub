@@ -13,3 +13,23 @@ html {
     height: 320px;
     margin: auto;
 }
+
+.acs{
+    border-color: #4B828C;
+}
+
+.acs-indicator {
+    width: 25px;
+    height: 25px;
+    background-color: #9B4AD0;
+    border: 1px solid #b1b1b1;
+}
+
+.acs-value {
+    background-color: #000000;
+}
+
+.big-number {
+    height: 70px;
+    font-size: 40px;
+}

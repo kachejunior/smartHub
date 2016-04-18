@@ -9,7 +9,8 @@ angular.module('starter',
     [
         'ionic',
         'starter.controllers',
-        'starter.services'
+        'starter.services',
+        'angular.circular-slider'
     ])
 
     .run(function ($ionicPlatform) {
