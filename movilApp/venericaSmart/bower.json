@@ -5,6 +5,7 @@
     "ionic": "driftyco/ionic-bower#1.2.4"
   },
   "dependencies": {
-    "lumx": "^0.3.96"
+    "lumx": "^0.3.96",
+    "angular-local-storage": "^0.2.7"
   }
 }

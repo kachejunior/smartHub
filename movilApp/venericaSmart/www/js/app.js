@@ -10,7 +10,8 @@ angular.module('starter',
         'ionic',
         'starter.controllers',
         'starter.services',
-        'angular.circular-slider'
+        'angular.circular-slider',
+        'LocalStorageModule'
     ])
 
     .run(function ($ionicPlatform) {
@@ -81,4 +82,9 @@ angular.module('starter',
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/tab/panel');
 
+    })
+    .config(function (localStorageServiceProvider) {
+        localStorageServiceProvider
+            .setPrefix('smartHubConfig')
+            .setNotify(true, true)
     });

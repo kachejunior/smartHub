@@ -1,5 +1,4 @@
 angular.module('starter.controllers', [])
-
     .controller('PanelCtrl', function ($scope, $http, $interval) {
         $scope.resultado = {};
         $scope.relay = {result: false};
@@ -126,17 +125,12 @@ angular.module('starter.controllers', [])
 
     })
 
-    .controller('ConfigCtrl', function ($scope, $sce) {
-        $scope.config = {
-            sources: [
-                {
-                    src: $sce.trustAsResourceUrl('http://static.videogular.com/assets/videos/videogular.mp4'),
-                    type: 'video/mp4'
-                }
-            ],
-            useNativeControls: true,
-            style: 'http://www.videogular.com/styles/themes/default/latest/videogular.css'
-        }
+    .controller('ConfigCtrl', function ($scope, $http, localStorageService) {
+        $scope.data = localStorageService.get('config');
+
+        $scope.saveConfig = function(){
+            localStorageService.set('config', $scope.data);
+        };
     })
 
     .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
