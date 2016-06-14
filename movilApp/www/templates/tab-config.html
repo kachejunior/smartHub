@@ -1,0 +1,38 @@
+<ion-view view-title="Config">
+    <ion-content>
+        <div class="card">
+            <div class="item item-divider tabs-background-dark tabs-color-light">
+                <strong>Host Conection</strong>
+            </div>
+            <label class="item item-input">
+                <input type="text" ng-model="data.host" placeholder="Domain o ip from Api Serve">
+            </label>
+            <button ng-click="saveConfig()" class="button button-full button-positive">
+                Save Config
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="item item-divider tabs-background-dark tabs-color-light">
+                <strong>Control Movement</strong>
+            </div>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Hour Move Inactive (0-23)</span>
+                <input type="text" ng-model="data.hour_move_off" placeholder="Ex: 4">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Hour Move Active (0-23)</span>
+                <input type="text" ng-model="data.hour_move_on" placeholder="Ex: 5">
+            </label>
+            <button ng-click="saveHour()" class="button button-full button-positive">
+                Save Config
+            </button>
+            <button ng-click="execute()" class="button button-full button-positive">
+                Exe Sql
+            </button>
+            <button ng-click="test()" class="button button-full button-positive">
+                Test Sql
+            </button>
+        </div>
+    </ion-content>
+</ion-view>
