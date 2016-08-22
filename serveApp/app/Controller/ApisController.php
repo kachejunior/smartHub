@@ -31,6 +31,78 @@ class ApisController extends AppController
         ));
     }
 
+    public function get_tables_records(){
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $thermostat = $this->Api->query('select * from thermostat order by id DESC limit 1');
+        $temp = $this->Api->query('select * from temp_log order by id DESC limit 1');
+        $zones = $this->Api->query('select * from zones where status = 1');
+        $records = array();
+
+        foreach($zones as $zone){
+            $aux =  new stdClass();
+            $aux->temperature = 0;
+            $aux->humidity = 0;
+            $aux->current = 0;
+            $aux->relay = 0;
+            $aux->light = 0;
+            $aux->date_time = date('m/d/Y h:i:s a');
+
+            $record = $this->Api->query('select * from '.$zone['zones']['table_name'].' order by id DESC limit 1');
+
+            if(count($record) > 0){
+                $aux = $record[0][$zone['zones']['table_name']];
+            }
+
+           array_push($records, array(
+              'zone' => $zone['zones'],
+              'last_record' => $aux
+           ));
+        }
+
+        $this->set(array(
+            'record' => $records,
+            'thermostat' => $thermostat,
+            'temp' => $temp[0],
+            '_serialize' => array('record', 'thermostat', 'temp')
+        ));
+    }
+
+    public function get_switch_light($table_name)
+    {
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $msg = 'error de insercion';
+        $aux = null;
+        $record = $this->Api->query('select * from '.$table_name.' order by id DESC limit 1');
+        $current = $record[0][$table_name]['current'];
+        $sql = 'update '.$table_name.' set relay = 1 where id=' . $record[0][$table_name]['id'];
+        $this->Api->query($sql);
+
+        $aux = false;
+        sleep(1);
+        $record2 = $this->Api->query('select * from '.$table_name.' order by id DESC limit 1');
+        if ($record2[0][$table_name]['current'] != $current) {
+            $aux = true;
+        }
+
+        $sql2 = 'update '.$table_name.' set relay = 0 where id=' . $record[0][$table_name]['id'];
+        $this->Api->query($sql2);
+
+        if ($aux) {
+            $msg = 'ok';
+        } else {
+            $msg = 'error';
+        }
+
+
+        $msg = 'ok';
+        $this->set(array(
+            'sql' => $sql,
+            'record' => $record,
+            'msg' => $msg,
+            '_serialize' => array('msg', 'sql', 'record')
+        ));
+    }
+
     public function add_record()
     {
         $msg = 'error de insercion';
@@ -137,13 +209,29 @@ class ApisController extends AppController
         ));
     }
 
-
     public function update_hour_move ($hour_move_off, $hour_move_on, $id){
         $msg = 'error de insercion';
         $aux = null;
         $this->response->header('Access-Control-Allow-Origin', '*');
         $this->Api->query('UPDATE panel_config SET hour_move_off = '.$hour_move_off.' , hour_move_on = '.$hour_move_on.' WHERE zone_id = '.$id);
         $msg = 'ok';
+        $this->set(array(
+            'msg' => $msg,
+            '_serialize' => array('msg')
+        ));
+    }
+
+    public function login($user, $pass){
+        $msg = 'error';
+        $this->response->header('Access-Control-Allow-Origin', '*');
+
+        $query = 'select * from user where username = "'.$user.'" and password="'.$pass.'"';
+        $result = $this->Api->query($query);
+
+        if(count($result) > 0){
+            $msg = 'ok';
+        }
+
         $this->set(array(
             'msg' => $msg,
             '_serialize' => array('msg')

@@ -44,22 +44,22 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" ng-repeat="record in records track by $index">
             <div class="item item-divider tabs-background-dark tabs-color-light">
-                <strong>Room 101 </strong>
-                <small>192.168.1.1</small>
+                <strong>{{record.zone.name}} </strong>
+                <small>{{record.zone.table_name}}</small>
                 <i class="i"></i>
             </div>
             <div class="item item-text-wrap">
                 <div class="row">
                     <div class="fs-subhead col col-33 text-center"
-                         ng-class="{'tc-orange-300':(resultado.temperature>20),'tc-light-blue-100':(resultado.temperature<=20)}">
-                        <i class="icon ion-thermometer"></i> {{resultado.temperature}}°
+                         ng-class="{'tc-orange-300':(record.last_record.temperature>20),'tc-light-blue-100':(record.last_record.temperature<=20)}">
+                        <i class="icon ion-thermometer"></i> {{record.last_record.temperature}}°
                     </div>
                     <div class="fs-subhead col col-33 text-center tc-light-blue-500"><i class="icon ion-waterdrop"></i>
-                        {{resultado.humidity}}%
+                        {{record.last_record.humidity}}%
                     </div>
-                    <div class="fs-subhead col col-33 text-center" ng-class="{'tc-red-500':(resultado.movement==1)}"><i
+                    <div class="fs-subhead col col-33 text-center" ng-class="{'tc-red-500':(record.last_record.movement==1)}"><i
                             class="fs-title icon ion-ios-body"></i>
                     </div>
                 </div>
@@ -67,16 +67,16 @@
 
                     <div class="fs-subhead col col-33 text-center p+">
                         <i class="fs-title icon"
-                           ng-class="{'ion-android-sunny tc-orange-500':(resultado.light==1), 'ion-ios-moon':(resultado.light==0)}"></i>
+                           ng-class="{'ion-android-sunny tc-orange-500':(record.last_record.light==1), 'ion-ios-moon':(record.last_record.light==0)}"></i>
                     </div>
                     <div class="fs-subhead col col-33 text-center">
-                        <button ng-click="switchButton()" ng-disabled="!load" class="button btn--s"
-                                ng-class="{'button-energized':(resultado.current==1)}">
+                        <button ng-click="switchButton(record)" ng-disabled="!load" class="button btn--s"
+                                ng-class="{'button-energized':(record.last_record.current==1)}">
                             <i class="fs-title ion-lightbulb" ng-class="{'ion-load-a':!load}"></i>
                         </button>
                     </div>
                     <div class="fs-subhead col col-33 text-center">
-                        <button ng-click="unlock()" ng-disabled="!automatico2" class="button button-stable btn--s">
+                        <button ng-click="unlock(record.zone.table_name)" ng-disabled="!automatico2" class="button button-stable btn--s">
                             <i class="fs-title ion-android-unlock" ng-class="{'ion-load-a':!automatico2}"></i>
                         </button>
                     </div>
@@ -88,9 +88,10 @@
                 </div>-->
             </div>
             <div class="item item-divider">
-                <small style="text-align: right">Last Connection: {{resultado.date_time}}</small>
+                <small style="text-align: right">Last Connection: {{record.last_record.date_time}}</small>
             </div>
         </div>
+
         <div class="card" ng-if="create">
             <div class="item item-divider tabs-background-dark tabs-color-light">
                 <strong>Create Panel</strong>

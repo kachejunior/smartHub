@@ -1,0 +1,45 @@
+<ion-view view-title="Hosting">
+    <ion-content>
+        <a class="btn btn-link center-block" ng-click="modal.hide()" style="margin-top: 45px" href="#/login"><i
+                class="ion-arrow-left-c"></i> Return to login
+        </a>
+
+        <div class="card" ng-repeat="host in listHost" style="margin-bottom: 10px">
+            <div class="list">
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Name</span>
+                    <input type="text" ng-model="host.name" placeholder="Name">
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Ip / Domain</span>
+                    <input type="text" ng-model="host.host" placeholder="Ip/Domain">
+                </label>
+                <label class="item">
+                    <a class="pull-right button-small button button-assertive icon ion-trash-b"></a>
+                    <a class="pull-right button-small button button-positive icon ion-checkmark"></a>
+                </label>
+            </div>
+        </div>
+        <div class="card" style="margin-bottom: 10px" ng-if="create">
+            <div class="list">
+                <label class="item item-input item-floating-label">
+                    <span class="input-label" ng-model="formHost.name">Name</span>
+                    <input type="text" placeholder="Name">
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label" ng-model="formHost.host">Ip / Domain</span>
+                    <input type="text" placeholder="Domain">
+                </label>
+            </div>
+            <button ng-click="createPanel()" class="button button-full button-positive">
+                Create Host
+            </button>
+            <button ng-click="closeCreate()" class="button button-full button-assertive">
+                Cancel
+            </button>
+        </div>
+        <button ng-if="!create" ng-click="openCreate()" class="button button-full button-outline button-positive">
+            <i class="ion-ios-plus-outline"></i> Add New Host
+        </button>
+    </ion-content>
+</ion-view>

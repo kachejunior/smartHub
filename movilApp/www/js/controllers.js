@@ -13,6 +13,7 @@ angular.module('starter.controllers', [])
             current: 0
         };
         $scope.temp = {};
+        $scope.records = [];
 
 
         $scope.getData = function () {
@@ -46,32 +47,60 @@ angular.module('starter.controllers', [])
             );
         };
 
+        $scope.getRecords = function(){
+            $scope.automatico = false;
+            $http.get(ConfigLocal.host+'/apis/get_tables_records.json').then(
+                function (response) {
+                    //console.log(response);
+                    var thermostat = response.data.thermostat[0].thermostat;
+                    $scope.thermostat = {
+                        temp: thermostat.temp,
+                        band: thermostat.band,
+                        current: thermostat.current
+                    };
+                    $scope.temp = response.data.temp.temp_log;
+
+                    $scope.records = response.data.record;
+                    console.log($scope.records);
+                    $scope.automatico = true;
+                    $scope.load = true;
+                },
+                function (err) {
+                    $scope.automatico = true;
+                    $scope.load = true;
+                    console.log(err);
+                    $scope.resultado = err;
+                }
+            );
+        };
         $interval(function () {
             if ($scope.automatico && $scope.load) {
-                $scope.getData();
+                $scope.getRecords();
             }
         }, 1000);
 
-        $scope.switchButton = function () {
+        $scope.switchButton = function (record) {
             $scope.load = false;
-            if (($scope.resultado.light == 1) && ($scope.resultado.current == 0)) {
+            if ((record.last_record.light == 1) && (record.last_record.current == 0)) {
                 var r = confirm('Enough Light Inside, Are you wants to turn the lamp anyway?');
                 if (!r) {
+                    $scope.load = true;
                     $scope.relay.result = false;
                     return false;
                 }
             }
-            $http.get(ConfigLocal.host+'/apis/add_record.json').then(
+            $http.get(ConfigLocal.host+'/apis/get_switch_light/'+record.zone.table_name+'.json').then(
                 function (response) {
                     console.log(response);
                     if (response.data.msg == 'error') {
                         alert('Error');
                     }
-                    $scope.getDate();
+                    $scope.load = true;
+                    $scope.getRecords();
                 },
                 function (err) {
                     console.log(err);
-                    $scope.automatico = true;
+                    $scope.load = true;
                 }
             );
         };
@@ -245,8 +274,74 @@ angular.module('starter.controllers', [])
         };
     })
 
-    .controller('ChatDetailCtrl', function ($scope, $stateParams, Chats) {
-        $scope.chat = Chats.get($stateParams.chatId);
+    .controller('LoginCtrl', function ($http,$location, ConfigLocal, $state, $scope, $ionicPopup, $cordovaSQLite) {
+        console.log('login');
+        $scope.formLogin = {};
+
+        $scope.login = function(){
+            $http.get(ConfigLocal.host+'/apis/login/' + $scope.formLogin.username + '/'+$scope.formLogin.password+'.json').then(
+                function(res){
+                    console.log(res);
+                    if(res.data.msg == 'ok'){
+                        $ionicPopup.alert({
+                            title: 'Alert!',
+                            template: 'Successful'
+                        });
+                        $state.go('tab.panel')
+                    }
+                    if(res.data.msg == 'error'){
+                        $ionicPopup.alert({
+                            title: 'Alert!',
+                            template: 'Login or Password Incorrect'
+                        });
+                    }
+                },
+                function(err){
+                $ionicPopup.alert({
+                    title: 'Alert!',
+                    template: 'Problem with the conection'
+                });
+            });
+        }
+        //var db = $cordovaSQLite.openDB({ name: "my.db" });
+
+        // for opening a background db:
+        /*var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
+
+        $scope.execute = function() {
+            var query = "INSERT INTO test_table (data, data_num) VALUES (?,?)";
+            $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
+                console.log("insertId: " + res.insertId);
+            }, function (err) {
+                console.error(err);
+            });
+        };*/
+
+    })
+
+    .controller('HostingCtrl', function ($scope, $cordovaSQLite) {
+        console.log('login');
+        $scope.create = false;
+        $scope.listHost = [
+            {name:'venerica', host:'http://smart.venericameat.com'}
+        ];
+        $scope.formHost = {};
+
+        /**
+         * Open form create panel
+         */
+        $scope.openCreate = function() {
+            $scope.create = true;
+            $scope.formHost = {};
+        };
+
+        /**
+         * Close form create
+         */
+        $scope.closeCreate = function() {
+            $scope.create = false;
+            $scope.formHost = {};
+        };
     })
 
     .controller('CamCtrl', function ($scope) {

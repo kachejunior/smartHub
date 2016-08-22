@@ -5,6 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
+
+var db = null;
+
 angular.module('starter',
     [
         'ionic',
@@ -16,33 +19,10 @@ angular.module('starter',
     ])
     .factory('ConfigLocal', function () {
         return {
-            host: 'http://smart.venericameat.com',
-            all: function () {
-                var projectString = window.localStorage['projects'];
-                if (projectString) {
-                    return angular.fromJson(projectString);
-                }
-                return [];
-            },
-            save: function (projects) {
-                window.localStorage['projects'] = angular.toJson(projects);
-            },
-            newProject: function (projectTitle) {
-                // Add a new project
-                return {
-                    title: projectTitle,
-                    tasks: []
-                };
-            },
-            getLastActiveIndex: function () {
-                return parseInt(window.localStorage['lastActiveProject']) || 0;
-            },
-            setLastActiveIndex: function (index) {
-                window.localStorage['lastActiveProject'] = index;
-            }
+            host: 'http://smart.venericameat.com'
         }
     })
-    .run(function ($ionicPlatform) {
+    .run(function ($ionicPlatform, $cordovaSQLite) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -55,6 +35,9 @@ angular.module('starter',
                 // org.apache.cordova.statusbar required
                 StatusBar.styleDefault();
             }
+
+            db = $cordovaSQLite.openDB("my.db");
+            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS login (id integer primary key, username text, lastname text)");
         });
     })
     .config(function ($stateProvider, $urlRouterProvider) {
@@ -67,12 +50,23 @@ angular.module('starter',
         $stateProvider
 
             // setup an abstract state for the tabs directive
+            .state('Login', {
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller:'LoginCtrl'
+            })
+
+            .state('Hosting', {
+                url: '/hosting',
+                templateUrl: 'templates/hosting.html',
+                controller:'HostingCtrl'
+            })
+
             .state('tab', {
                 url: '/tab',
                 abstract: true,
                 templateUrl: 'templates/tabs.html'
             })
-
 
             // Each tab has its own nav history stack:
 
@@ -107,24 +101,12 @@ angular.module('starter',
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/tab/panel');
+        $urlRouterProvider.otherwise('/login');
 
     })
     .config(function (localStorageServiceProvider) {
         localStorageServiceProvider
             .setPrefix('smartHubConfig')
             .setNotify(true, true)
-    }).run(function($ionicPlatform, $cordovaSQLite) {
-        $ionicPlatform.ready(function() {
-            if(window.cordova && window.cordova.plugins.Keyboard) {
-                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-            }
-            if(window.StatusBar) {
-                StatusBar.styleDefault();
-            }
-            db = $cordovaSQLite.openDB("my.db");
-            $cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS users (id integer primary key, username text)");
-        });
     })
-
 ;
