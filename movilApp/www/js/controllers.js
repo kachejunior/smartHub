@@ -1,5 +1,5 @@
 angular.module('starter.controllers', [])
-    .controller('PanelCtrl', function ($scope, $http, $interval, localStorageService, ConfigLocal) {
+    .controller('PanelCtrl', function ($scope, $http, $interval, localStorageService, ConfigLocal, $ionicPopup) {
         $scope.resultado = {};
         $scope.relay = {result: false};
         $scope.automatico = true;
@@ -131,39 +131,41 @@ angular.module('starter.controllers', [])
                 function (response) {
                     console.log(response);
                     $scope.automatico = true;
+                    $scope.load = true;
                 },
                 function (err) {
                     console.log(err);
                     $scope.automatico = true;
+                    $scope.load = true;
                 }
             );
         };
 
+
         /**
-         * +1 in band control
+         * +1 in temp control
          */
-        $scope.upValue = function () {
+        $scope.upTemp = function () {
             $scope.automatico = false;
-            $scope.thermostat.band = parseFloat($scope.thermostat.band) + parseFloat(1);
+            $scope.load = false;
+            $scope.thermostat.temp = parseFloat($scope.thermostat.temp) + parseFloat(1);
             $scope.updateThermostat();
         };
 
         /**
-         * -1 in band control
+         * -1 in temp control
          */
-        $scope.downValue = function () {
+        $scope.downTemp = function () {
             $scope.automatico = false;
-            $scope.thermostat.band = parseFloat($scope.thermostat.band) - parseFloat(1);
+            $scope.load = false;
+            $scope.thermostat.temp = parseFloat($scope.thermostat.temp) - parseFloat(1);
             $scope.updateThermostat();
         };
 
-        /**
-         * when the nest themostat control edit, call $scope.updateThermostat()
-         */
-        $scope.$watch('thermostat.temp', function (newValue, oldValue) {
-            if ((newValue != oldValue)) {
-                console.log(newValue);
+        $scope.$watch('thermostat.band', function(newValue, oldValue) {
+            if(newValue != oldValue){
                 $scope.automatico = false;
+                $scope.load = false;
                 $scope.updateThermostat();
             }
         });
@@ -172,10 +174,41 @@ angular.module('starter.controllers', [])
          * Edit by keyboard the thermostat
          */
         $scope.promptTemp = function(){
-            var temperature = prompt("Please enter your temperature");
-            if (temperature != null) {
+            //var temperature = prompt("Please enter your temperature");
+            /*if (temperature != null) {
                 $scope.thermostat.temp = temperature;
-            }
+            }*/
+            // An elaborate, custom popup
+            $scope.automatico = false;
+            console.log($scope.automatico);
+            $scope.load = false;
+            $scope.data = {};
+
+            var myPopup = $ionicPopup.show({
+                template: '<input type="number" ng-model="data.temp">',
+                title: 'Please enter your temperature',
+                scope: $scope,
+                buttons: [
+                    { text: 'Cancel' },
+                    {
+                        text: '<b>Save</b>',
+                        type: 'button-positive',
+                        onTap: function(e) {
+                            if (!$scope.data.temp) {
+                                //don't allow the user to close unless he enters wifi password
+                                e.preventDefault();
+                            } else {
+                                $scope.thermostat.temp = angular.copy($scope.data.temp);
+                                $scope.updateThermostat();
+                                $scope.load = true;
+                                return $scope.data.temp;
+                            }
+                        }
+                    }
+                ]
+            });
+
+            console.log(myPopup);
         };
 
 
@@ -251,27 +284,6 @@ angular.module('starter.controllers', [])
                 }
             );
         }
-
-        
-        var db = $cordovaSQLite.openDB({ name: "my.db", bgType: 1 });
-
-        $scope.execute = function() {
-            var query = "INSERT INTO users (username) VALUES (?)";
-            $cordovaSQLite.execute(db, query, ["user_test"]).then(function(res) {
-                console.log("insertId: " + res.insertId);
-            }, function (err) {
-                console.error(err);
-            });
-        };
-
-        $scope.test = function() {
-            var query = "select * from users";
-            $cordovaSQLite.execute(db, query, ["test", 100]).then(function(res) {
-                console.log(res);
-            }, function (err) {
-                console.error(err);
-            });
-        };
     })
 
     .controller('LoginCtrl', function ($http,$location, ConfigLocal, $state, $scope, $ionicPopup, $cordovaSQLite) {
@@ -323,7 +335,8 @@ angular.module('starter.controllers', [])
         console.log('login');
         $scope.create = false;
         $scope.listHost = [
-            {name:'venerica', host:'http://smart.venericameat.com'}
+            {name:'venerica', host:'http://smart.venericameat.com'},
+            {name:'Mi Casa', host:'172.168.12.123'}
         ];
         $scope.formHost = {};
 

@@ -4,42 +4,33 @@
             <div class="item item-divider tabs-background-dark tabs-color-light">
                 <strong>General Thermostat</strong>
             </div>
-            <div class="item item-text-wrap row">
-                <div class="col col-50">
-                    <circular-slider style="margin-left: 10px;"
-                                     class='my-slider'
-                                     shape='Half Circle'
-                                     touch="true"
-                                     animate='true'
-                                     on-slide='onSlide'
-                                     on-slide-end='onSlideEnd'
-                                     min="-10"
-                                     max="30"
-                                     value="thermostat.temp"
-                                     ng-click="promptTemp()">
-                        {{value}}
-                    </circular-slider>
-                    <div style="height: 40px;"></div>
-                </div>
-                <div class="col col-50">
-                    <div class="row">
-                        <div class="col col-50">
-                            <label>Band</label>
-
-                            <h2 style="font-size: 20px;">+/- {{thermostat.band}}°</h2>
-                        </div>
-                        <div class="col col-50">
-                            <label>Temp</label>
-
-                            <h2 style="font-size: 20px;">{{temp.current}}°</h2>
-                        </div>
+            <div class="item">
+                <div class="row" style="margin-left: 1vw">
+                    <div class="col-xs-8 text-center" style="background: #000000; color: white; font-family: digital-text;">
+                        <span style="font-size: 13vh;" ng-class="{'tc-blue-200':(thermostat.temp < 10),'tc-blue-A700':(thermostat.temp < 20),'tc-green-500':(thermostat.temp >= 20),'tc-yellow-A200':(thermostat.temp >= 25),'tc-deep-orange-A400':(thermostat.temp >= 30)}">{{thermostat.temp}}°</span><br>
+                        <span style="font-size: 4vh;">Now {{temp.current}}°</span>
                     </div>
-                    <button class="button btn--s" ng-click="downValue()" ng-disabled="thermostat.band <= 1">
-                        <i style="font-size: 3em">-</i>
-                    </button>
-                    <button class="button btn--s" ng-click="upValue()" ng-disabled="thermostat.band >= 5">
-                        <i style="font-size: 3em">+</i>
-                    </button>
+                    <div class="col-xs-4">
+                        <button ng-disabled="!load" class="button button-full button-stable" ng-click="upTemp()">
+                           <i class="ion-chevron-up"></i>
+                        </button>
+                        <button ng-disabled="!load" class="button button-full button-stable" ng-click="downTemp()">
+                            <i class="ion-chevron-down"></i>
+                        </button>
+                        <button ng-disabled="!load" class="button button-full button-stable" ng-click="promptTemp()">
+                            Manual
+                        </button>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 15px; margin-left: 1vw">
+                    <label>Band (+/-)</label>
+                    <lx-radio-group>
+                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="1" ng-model="thermostat.band">1</lx-radio-button>
+                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="2" ng-model="thermostat.band">2</lx-radio-button>
+                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="3" ng-model="thermostat.band">3</lx-radio-button>
+                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="4" ng-model="thermostat.band">4</lx-radio-button>
+                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="5" ng-model="thermostat.band">5</lx-radio-button>
+                    </lx-radio-group>
                 </div>
             </div>
         </div>

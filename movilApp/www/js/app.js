@@ -15,7 +15,8 @@ angular.module('starter',
         'starter.services',
         'angular.circular-slider',
         'LocalStorageModule',
-        'ngCordova'
+        'ngCordova',
+        'lumx'
     ])
     .factory('ConfigLocal', function () {
         return {

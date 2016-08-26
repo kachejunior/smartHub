@@ -4,6 +4,13 @@ html {
     font-size: 1em;
 }
 
+@font-face {
+    font-family: "digital-text";
+    src: url("../fonts/DS-DIGI.TTF") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 .scroll-content {
     margin-top: -45px;
 }
