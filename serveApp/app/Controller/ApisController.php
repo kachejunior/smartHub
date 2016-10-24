@@ -23,11 +23,13 @@ class ApisController extends AppController
         $record = $this->Api->query('select * from panel_192_168_1_1 order by id DESC limit 1');
         $thermostat = $this->Api->query('select * from thermostat order by id DESC limit 1');
         $temp = $this->Api->query('select * from temp_log order by id DESC limit 1');
+        $door = $this->Api->query('select * from door where id = 1');
         $this->set(array(
             'record' => $record,
             'thermostat' => $thermostat,
             'temp' => $temp[0],
-            '_serialize' => array('record', 'thermostat', 'temp')
+            'door' => $door[0],
+            '_serialize' => array('record', 'thermostat', 'temp', 'door')
         ));
     }
 
@@ -36,6 +38,7 @@ class ApisController extends AppController
         $thermostat = $this->Api->query('select * from thermostat order by id DESC limit 1');
         $temp = $this->Api->query('select * from temp_log order by id DESC limit 1');
         $zones = $this->Api->query('select * from zones where status = 1');
+        $door = $this->Api->query('select * from door where id = 1');
         $records = array();
 
         foreach($zones as $zone){
@@ -55,6 +58,7 @@ class ApisController extends AppController
 
            array_push($records, array(
               'zone' => $zone['zones'],
+               'door'=> $door[0],
               'last_record' => $aux
            ));
         }
@@ -159,9 +163,9 @@ class ApisController extends AppController
         $msg = 'error de insercion';
         $aux = null;
         $this->response->header('Access-Control-Allow-Origin', '*');
-        $this->Api->query('UPDATE door SET door.lock=1 WHERE (door.lock=0);');
+        $this->Api->query('UPDATE door SET unlocker=1 WHERE (unlocker=0);');
         sleep(1);
-        $this->Api->query('UPDATE door SET door.lock=0 WHERE (door.lock=1);');
+        $this->Api->query('UPDATE door SET unlocker=0 WHERE (unlocker=1);');
         $msg = 'ok';
         $this->set(array(
             'msg' => $msg,
@@ -197,15 +201,53 @@ class ApisController extends AppController
         ));
     }
 
-    public function get_config ($id){
-        $msg = 'error de insercion';
+    public function get_config_panel ($id){
+        $msg = 'Error';
         $aux = null;
         $this->response->header('Access-Control-Allow-Origin', '*');
         $record = $this->Api->query('select * from panel_config where zone_id ='.$id);
         $msg = 'ok';
         $this->set(array(
-            'record' => $record[0],
-            '_serialize' => array('record')
+            'config' => $record[0],
+            'msg'=>$msg,
+            '_serialize' => array('config')
+        ));
+    }
+
+    public function put_config_panel ($id){
+        $msg = 'Error';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        //print_r($this->request->query);
+        $sql = 'update panel_config set'.
+            ' mon_stat = "'.$this->request->query['mon_stat'].'",'.
+            ' mon_ini = "'.$this->request->query['mon_ini'].'",'.
+            ' mon_end = "'.$this->request->query['mon_end'].'",'.
+            ' tue_stat = "'.$this->request->query['tue_stat'].'",'.
+            ' tue_ini = "'.$this->request->query['tue_ini'].'",'.
+            ' tue_end = "'.$this->request->query['tue_end'].'",'.
+            ' wed_stat = "'.$this->request->query['wed_stat'].'",'.
+            ' wed_ini = "'.$this->request->query['wed_ini'].'",'.
+            ' wed_end = "'.$this->request->query['wed_end'].'",'.
+            ' thu_stat = "'.$this->request->query['thu_stat'].'",'.
+            ' thu_ini = "'.$this->request->query['thu_ini'].'",'.
+            ' thu_end = "'.$this->request->query['thu_end'].'",'.
+            ' fri_stat = "'.$this->request->query['fri_stat'].'",'.
+            ' fri_ini = "'.$this->request->query['fri_ini'].'",'.
+            ' fri_end = "'.$this->request->query['fri_end'].'",'.
+            ' sat_stat = "'.$this->request->query['sat_stat'].'",'.
+            ' sat_ini = "'.$this->request->query['sat_ini'].'",'.
+            ' sat_end = "'.$this->request->query['sat_end'].'",'.
+            ' sun_stat = "'.$this->request->query['sun_stat'].'",'.
+            ' sun_ini = "'.$this->request->query['sun_ini'].'",'.
+            ' sun_end = "'.$this->request->query['sun_end'].'"'.
+            ' where zone_id ='.$id;
+        $record = $this->Api->query($sql);
+        $msg = 'ok';
+        $this->set(array(
+            'config' => $sql,
+            'msg'=>$msg,
+            '_serialize' => array('config')
         ));
     }
 
@@ -235,6 +277,56 @@ class ApisController extends AppController
         $this->set(array(
             'msg' => $msg,
             '_serialize' => array('msg')
+        ));
+    }
+
+    public function get_cam_list($id_zone){
+        $msg = 'error';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $record = $this->Api->query('select * from cams where zone_id ='.$id_zone);
+        $msg = 'ok';
+        $this->set(array(
+            'cams' => $record,
+            'msg'=>$msg,
+            '_serialize' => array('cams','msg')
+        ));
+    }
+
+    public function post_cam(){
+        $msg = 'error';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $this->Api->query("insert into cams (zone_id, name, host) values ('".$this->request->query['zone_id']."','".$this->request->query['name']."','".$this->request->query['host']."')");
+        $msg = 'ok';
+        $this->set(array(
+            'msg'=>$msg,
+            '_serialize' => array('cams','msg')
+        ));
+    }
+
+    public function put_cam($id){
+        $msg = 'error';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $this->Api->query("update cams set name = '".$this->request->query['name']."', host = '".$this->request->query['host']."' where id =".$id);
+        $msg = 'ok';
+        $this->set(array(
+            'msg'=>$msg,
+            '_serialize' => array('cams','msg')
+        ));
+    }
+
+    public function delete_cam($id){
+        $msg = 'error';
+        $aux = null;
+        $this->response->header('Access-Control-Allow-Origin', '*');
+        $record = $this->Api->query('delete from cams where id ='.$id);
+        $msg = 'ok';
+        $this->set(array(
+            'cams' => $record,
+            'msg'=>$msg,
+            '_serialize' => array('cams','msg')
         ));
     }
 }

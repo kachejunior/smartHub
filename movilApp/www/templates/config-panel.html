@@ -1,0 +1,165 @@
+<ion-view view-title="Config Zone">
+    <ion-content>
+        <ion-tabs class="tabs-positive tabs-icon-top">
+
+            <ion-tab title="Movement" icon-on="ion-ios-body" icon-off="ion-ios-body">
+                <ion-scroll direction="y" style="height: 90vh;">
+                    <ul class="list" style="margin-top: 15vh">
+                        <li class="item item-toggle">
+                            Monday
+                            <label class="toggle">
+                                <input ng-model="config.mon_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.mon_stat == 1">
+                            <rzslider rz-slider-model="config.mon_ini" rz-slider-high="config.mon_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Tuesday
+                            <label class="toggle">
+                                <input ng-model="config.tue_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.tue_stat == 1">
+                            <rzslider rz-slider-model="config.tue_ini" rz-slider-high="config.tue_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Wednesday
+                            <label class="toggle">
+                                <input ng-model="config.wed_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.wed_stat == 1">
+                            <rzslider rz-slider-model="config.wed_ini" rz-slider-high="config.wed_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Thursday
+                            <label class="toggle">
+                                <input ng-model="config.thu_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.thu_stat == 1">
+                            <rzslider rz-slider-model="config.thu_ini" rz-slider-high="config.thu_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Friday
+                            <label class="toggle">
+                                <input ng-model="config.fri_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.fri_stat == 1">
+                            <rzslider rz-slider-model="config.fri_ini" rz-slider-high="config.fri_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Saturday
+                            <label class="toggle">
+                                <input ng-model="config.sat_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.sat_stat == 1">
+                            <rzslider rz-slider-model="config.sat_ini" rz-slider-high="config.sat_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                        <li class="item item-toggle">
+                            Sunday
+                            <label class="toggle">
+                                <input ng-model="config.sun_stat" value="1" type="checkbox">
+
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                        </li>
+                        <li class="item" ng-if="config.sun_stat == 1">
+                            <rzslider rz-slider-model="config.sun_ini" rz-slider-high="config.sun_end"
+                                      rz-slider-options="{floor: 0, ceil: 23}"></rzslider>
+                        </li>
+                    </ul>
+                </ion-scroll>
+                <button class="button button-full button-positive" ng-click="save()">
+                    Save Config Movement
+                </button>
+            </ion-tab>
+
+            <ion-tab title="Cam" icon-on="ion-videocamera" icon-off="ion-videocamera">
+                <ion-scroll direction="y" style="height: 90vh;">
+                    <div style="height:6vh"></div>
+                    <div class="card" ng-repeat="cam in listCam" style="margin-bottom: 10px">
+                        <div class="list">
+                            <label class="item item-input item-floating-label">
+                                <span class="input-label">Name</span>
+                                <input type="text" ng-model="cam.cams.name" placeholder="Name">
+                            </label>
+                            <label class="item item-input item-floating-label">
+                                <span class="input-label">Ip/Domain[:port] (No include http)</span>
+                                <input type="text" ng-model="cam.cams.host" placeholder="Ip/Domain[:port]">
+                            </label>
+
+                            <div style="margin-top: 5px; margin-bottom: 10px">
+                                <button ng-click="deleteCam(cam.cams.id)"
+                                        class="pull-right button-small button button-assertive icon ion-trash-b"></button>
+                                <button ng-click="updateCam(cam.cams)"
+                                        class="pull-right button-small button button-positive icon ion-checkmark"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom: 10px" ng-if="create">
+                        <div class="list">
+                            <label class="item item-input item-floating-label">
+                                <span class="input-label">Name</span>
+                                <input type="text" ng-model="formCam.name" placeholder="Name">
+                            </label>
+                            <label class="item item-input item-floating-label">
+                                <span class="input-label">Ip/Domain[:port] (No include http)</span>
+                                <input type="text" ng-model="formCam.host"
+                                       placeholder="Example: 192.168.1.1:8888">
+                            </label>
+                        </div>
+                        <button ng-click="saveCam()" ng-disabled="!formCam.name || !formCam.host"
+                                class="button button-full button-positive">
+                            Create Cam
+                        </button>
+                        <button ng-click="closeCreate()" class="button button-full button-assertive">
+                            Cancel
+                        </button>
+                    </div>
+                    <button ng-if="!create" ng-click="openCreate()"
+                            class="button button-full button-outline button-positive">
+                        <i class="ion-ios-plus-outline"></i> Add New Cam
+                    </button>
+                </ion-scroll>
+            </ion-tab>
+
+        </ion-tabs>
+
+    </ion-content>
+</ion-view>

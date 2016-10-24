@@ -13,10 +13,10 @@ angular.module('starter',
         'ionic',
         'starter.controllers',
         'starter.services',
-        'angular.circular-slider',
         'LocalStorageModule',
         'ngCordova',
-        'lumx'
+        'lumx',
+        'rzModule'
     ])
     .factory('ConfigLocal', function () {
         return {
@@ -54,13 +54,25 @@ angular.module('starter',
             .state('Login', {
                 url: '/login',
                 templateUrl: 'templates/login.html',
-                controller:'LoginCtrl'
+                controller: 'LoginCtrl'
             })
 
             .state('Hosting', {
                 url: '/hosting',
                 templateUrl: 'templates/hosting.html',
-                controller:'HostingCtrl'
+                controller: 'HostingCtrl'
+            })
+
+            .state('PanelConfig', {
+                url: '/config-panel/:id',
+                templateUrl: 'templates/config-panel.html',
+                controller: 'ConfigPanelCtrl'
+            })
+
+            .state('Cam', {
+                url: '/cam-panel/:id',
+                templateUrl: 'templates/cam-panel.html',
+                controller: 'CamCtrl'
             })
 
             .state('tab', {
@@ -101,11 +113,12 @@ angular.module('starter',
                 }
             });
 
-        // if none of the above states are matched, use this as the fallback
+// if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/login');
 
     })
-    .config(function (localStorageServiceProvider) {
+    .
+    config(function (localStorageServiceProvider) {
         localStorageServiceProvider
             .setPrefix('smartHubConfig')
             .setNotify(true, true)

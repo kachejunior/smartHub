@@ -25,11 +25,11 @@
                 <div class="row" style="margin-top: 15px; margin-left: 1vw">
                     <label>Band (+/-)</label>
                     <lx-radio-group>
-                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="1" ng-model="thermostat.band">1</lx-radio-button>
-                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="2" ng-model="thermostat.band">2</lx-radio-button>
-                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="3" ng-model="thermostat.band">3</lx-radio-button>
-                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="4" ng-model="thermostat.band">4</lx-radio-button>
-                        <lx-radio-button style="float: left; margin-left: 5px" name="test1" value="5" ng-model="thermostat.band">5</lx-radio-button>
+                        <lx-radio-button lx-color="blue" style="float: left; margin-left: 5px" name="test1" value="1" ng-model="thermostat.band">1</lx-radio-button>
+                        <lx-radio-button lx-color="blue" style="float: left; margin-left: 5px" name="test1" value="2" ng-model="thermostat.band">2</lx-radio-button>
+                        <lx-radio-button lx-color="blue" style="float: left; margin-left: 5px" name="test1" value="3" ng-model="thermostat.band">3</lx-radio-button>
+                        <lx-radio-button lx-color="blue" style="float: left; margin-left: 5px" name="test1" value="4" ng-model="thermostat.band">4</lx-radio-button>
+                        <lx-radio-button lx-color="blue" style="float: left; margin-left: 5px" name="test1" value="5" ng-model="thermostat.band">5</lx-radio-button>
                     </lx-radio-group>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="item item-divider tabs-background-dark tabs-color-light">
                 <strong>{{record.zone.name}} </strong>
                 <small>{{record.zone.table_name}}</small>
-                <i class="i"></i>
+                <a class="pull-right" href="#/config-panel/{{record.zone.id}}"><i class="ion-navicon-round"></i></a>
             </div>
             <div class="item item-text-wrap">
                 <div class="row">
@@ -66,18 +66,19 @@
                             <i class="fs-title ion-lightbulb" ng-class="{'ion-load-a':!load}"></i>
                         </button>
                     </div>
-                    <div class="fs-subhead col col-33 text-center">
-                        <button ng-click="unlock(record.zone.table_name)" ng-disabled="!automatico2" class="button button-stable btn--s">
-                            <i class="fs-title ion-android-unlock" ng-class="{'ion-load-a':!automatico2}"></i>
-                        </button>
+                    <div class="col col-33 text-center">
+                        <a href="#/cam-panel/{{record.zone.id}}" class="button button-stable btn--s">
+                            <i class="fs-title ion-videocamera"></i>
+                        </a>
                     </div>
                 </div>
-                <!--<div class="row">
-                    <a href="" class="item item-icon-left">
-                        <i class="icon ion-videocamera"></i>
-                    </a>
-                </div>-->
             </div>
+            <a class="item item-icon-left" ng-click="unlock(record.zone.table_name)" ng-disabled="!automatico2">
+                <i class="fs-title ion-android-unlock" ng-class="{'ion-load-a':!automatico2}"></i>
+                Enter
+                <span style="margin-top: 5px" ng-if="record.door.door.status == '0'" class="pull-right badge badge-assertive" style="margin-right: 15vw">Open</span>
+                <span style="margin-top: 5px" ng-if="record.door.door.status == '1'" class="pull-right badge badge-positive" style="margin-right: 15vw">Close</span>
+            </a>
             <div class="item item-divider">
                 <small style="text-align: right">Last Connection: {{record.last_record.date_time}}</small>
             </div>

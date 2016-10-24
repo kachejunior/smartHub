@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "lumx": "^0.3.96",
-    "angular-local-storage": "^0.2.7"
+    "angular-local-storage": "^0.2.7",
+    "angularjs-slider": "^5.4.3"
   }
 }

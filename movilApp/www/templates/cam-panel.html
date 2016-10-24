@@ -1,0 +1,12 @@
+<ion-view view-title="{{config.name}}">
+    <ion-content>
+        <a class="btn btn-link center-block" ng-click="modal.hide()" style="margin-top: 45px" href="#/tab/panel"><i
+                class="ion-arrow-left-c"></i> Return to General Panel
+        </a>
+
+        <div ng-repeat="cam in listCam" class="card text-center" style="margin-top: 10px;">
+            <label class="text-center">{{cam.cams.name}}</label>
+            <img ng-src="http://{{cam.cams.host}}">
+        </div>
+    </ion-content>
+</ion-view>
