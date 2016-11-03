@@ -8,7 +8,10 @@
                 <div class="row" style="margin-left: 1vw">
                     <div class="col-xs-8 text-center" style="background: #000000; color: white; font-family: digital-text;">
                         <span style="font-size: 13vh;" ng-class="{'tc-blue-200':(thermostat.temp < 10),'tc-blue-A700':(thermostat.temp < 20),'tc-green-500':(thermostat.temp >= 20),'tc-yellow-A200':(thermostat.temp >= 25),'tc-deep-orange-A400':(thermostat.temp >= 30)}">{{thermostat.temp}}°</span><br>
-                        <span style="font-size: 4vh;">Now {{temp.current}}°</span>
+                        <span style="font-size: 4vh;">Now {{temp.current}}°
+                            <i ng-if="(thermostat.heater == 1)||(thermostat.heater == '1')" class="tc-red-500 ion-fireball"></i>
+                            <i ng-if="(thermostat.cooler == 1)||(thermostat.cooler == '1')" class="tc-blue-500 ion-ios-snowy"></i>
+                        </span>
                     </div>
                     <div class="col-xs-4">
                         <button ng-disabled="!load" class="button button-full button-stable" ng-click="upTemp()">

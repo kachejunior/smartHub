@@ -90,7 +90,9 @@ angular.module('starter.controllers', [])
                     $scope.thermostat = {
                         temp: thermostat.temp,
                         band: thermostat.band,
-                        current: thermostat.current
+                        current: thermostat.current,
+                        cooler: thermostat.cooler,
+                        heater: thermostat.heater
                     };
                     $scope.temp = response.data.temp.temp_log;
                     $scope.resultado = response.data.record[0].panel_192_168_1_1;
@@ -121,7 +123,9 @@ angular.module('starter.controllers', [])
                     $scope.thermostat = {
                         temp: thermostat.temp,
                         band: thermostat.band,
-                        current: thermostat.current
+                        current: thermostat.current,
+                        cooler: thermostat.cooler,
+                        heater: thermostat.heater
                     };
                     $scope.temp = response.data.temp.temp_log;
 

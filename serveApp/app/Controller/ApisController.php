@@ -118,7 +118,7 @@ class ApisController extends AppController
         $this->Api->query($sql);
 
         $aux = false;
-        sleep(1);
+        sleep(1.5);
         $record2 = $this->Api->query('select * from panel_192_168_1_1 order by id DESC limit 1');
         if ($record2[0]['panel_192_168_1_1']['current'] != $current) {
             $aux = true;
